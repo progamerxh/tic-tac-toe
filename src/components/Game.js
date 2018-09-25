@@ -69,6 +69,7 @@ class Game extends Component {
   }
 
   jumpTo = (step) => {
+    const length = this.state.history.length - 1;
     const history = this.state.history.slice(0, step + 1);
     const current = history[history.length - 1];
     const highlights = calculateWinner(current.squares) || [];
@@ -79,7 +80,8 @@ class Game extends Component {
       stepNumber: step,
       xIsNext: (step % 2) ? false : true,
     });
-
+    if (!this.state.isAscending)
+      step = length - step;
     const steps = document.querySelectorAll('li');
     const selected = [...steps].filter(step => step.classList.contains('selected'))[0];
     if (selected) {
