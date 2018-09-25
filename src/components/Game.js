@@ -21,6 +21,7 @@ class Game extends Component {
       highLights: [],
       stepNumber: 0,
       xIsNext: true,
+      isAscending: true,
     };
   }
 
@@ -43,6 +44,7 @@ class Game extends Component {
       this.updateHighLights(winner);
     }
 
+
     this.setState({
       history: history.concat([{
         squares,
@@ -57,9 +59,9 @@ class Game extends Component {
     this.setState({ highLights });
   }
 
-  toggleOrder = () => {
-    const history = this.state.history.slice().reverse();
-    this.setState({ history });
+  toggleOrder = (isAscending) => {
+    isAscending = !this.state.isAscending;
+    this.setState({ isAscending });
   }
 
   updateHighLights = (highLights) => {
@@ -89,7 +91,7 @@ class Game extends Component {
   render() {
     const { highLights, history, stepNumber, xIsNext } = this.state;
     const current = history[stepNumber];
-
+    const sortstatus = this.state.isAscending ? `Sort descending ` : `Sort ascending `;
     let status;
     if (highLights.length > 0) {
       const { x, y } = highLights[0];
@@ -100,14 +102,16 @@ class Game extends Component {
       }
 
       status = `Winner: ${winnerSymbol}`;
-    } else {
+    } else if (stepNumber < 9) {
       status = `Next Player: ${xIsNext ? 'X' : 'O'}`;
     }
+    else
+      status = `Draw`;
 
     return (
       <div className="game">
         <div className="game-board">
-          <Board 
+          <Board
             highLights={highLights}
             squares={current.squares}
             onClick={(x, y) => this.handleClick(x, y)} />
@@ -116,8 +120,9 @@ class Game extends Component {
           <div>{status}</div>
           <MoveList
             history={history}
-            jumpTo={this.jumpTo} />
-          <button onClick={this.toggleOrder}>Sort MoveList</button>
+            jumpTo={this.jumpTo}
+            isAscending = {this.state.isAscending}  />
+          <button onClick={this.toggleOrder}> {sortstatus} </button>
         </div>
       </div>
     );
